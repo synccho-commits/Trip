@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#7A2030">
+<title>도쿄 · 2026.06.05–07</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --bg:#F4EFE3;
+  --bg-deep:#EDE6D3;
+  --bg-light:#FAF7ED;
+  --ink:#1A1714;
+  --ink-soft:#3D362F;
+  --muted:#7A6E60;
+  --line:#C9BFA8;
+  --line-soft:#DDD3BC;
+  --accent:#7A2030;
+  --accent-soft:#A85060;
+  --accent-deep:#5A1722;
+  --gold:#A8854A;
+  --gold-soft:#C9A961;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  background-image:
+    radial-gradient(at 20% 5%, rgba(168,133,74,.07), transparent 50%),
+    radial-gradient(at 80% 60%, rgba(122,32,48,.04), transparent 55%),
+    radial-gradient(at 40% 95%, rgba(168,133,74,.05), transparent 50%);
+  color:var(--ink);
+  font-family:'Noto Serif KR','EB Garamond',serif;
+  font-weight:400;
+  line-height:1.7;
+  letter-spacing:.005em;
+  font-feature-settings:"kern" 1,"liga" 1,"tnum" 1;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+main{max-width:680px;margin:0 auto;padding:0 28px 80px;position:relative}
+@media(max-width:540px){main{padding:0 20px 60px}}
+
+/* ════════ ANIMATIONS ════════ */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+@keyframes scaleIn{
+  from{opacity:0;transform:scale(.95)}
+  to{opacity:1;transform:scale(1)}
+}
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(40px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes shimmer{
+  0%{background-position:-200% 0}
+  100%{background-position:200% 0}
+}
+@keyframes pulse{
+  0%,100%{opacity:1}
+  50%{opacity:.4}
+}
+@keyframes bgDrift{
+  0%,100%{transform:translateX(0) translateY(0)}
+  50%{transform:translateX(-15px) translateY(-10px)}
+}
+
+/* ════════ HERO ════════ */
+.hero{
+  position:relative;
+  text-align:center;
+  padding:80px 0 48px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:40px;
+  overflow:hidden;
+  animation:fadeIn 1s ease-out;
+}
+.hero-bg{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-weight:400;
+  font-size:clamp(140px,30vw,260px);
+  color:var(--gold);
+  opacity:.07;
+  letter-spacing:-.04em;
+  pointer-events:none;
+  user-select:none;
+  white-space:nowrap;
+  animation:bgDrift 20s ease-in-out infinite;
+}
+.hero-content{position:relative;z-index:1}
+.hero-mark{
+  font-family:'Nanum Myeongjo',serif;
+  font-size:12px;
+  letter-spacing:.6em;
+  color:var(--accent);
+  margin-bottom:28px;
+  text-indent:.6em;
+  animation:fadeUp .8s ease-out .1s both;
+}
+.hero-title{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:500;
+  font-size:clamp(52px,11vw,86px);
+  line-height:.95;
+  letter-spacing:-.02em;
+  margin-bottom:14px;
+  animation:fadeUp .8s ease-out .2s both;
+}
+.hero-title em{
+  font-style:italic;
+  font-weight:400;
+  color:var(--accent);
+  position:relative;
+}
+.hero-title em::after{
+  content:"";
+  position:absolute;
+  bottom:.12em;
+  left:0;
+  right:0;
+  height:1px;
+  background:var(--gold);
+  opacity:.4;
+}
+.hero-dates{
+  font-family:'EB Garamond',serif;
+  font-size:17px;
+  font-style:italic;
+  color:var(--muted);
+  margin-top:18px;
+  letter-spacing:.06em;
+  animation:fadeUp .8s ease-out .3s both;
+}
+.hero-base{
+  font-family:'EB Garamond',serif;
+  font-size:13px;
+  color:var(--gold);
+  margin-top:10px;
+  letter-spacing:.1em;
+  animation:fadeUp .8s ease-out .4s both;
+}
+.hero-base em{font-style:italic;color:var(--accent)}
+.hero-tags{
+  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:24px;
+  font-family:'Nanum Myeongjo',serif;
+  font-size:11px;
+  letter-spacing:.4em;
+  color:var(--ink-soft);
+  animation:fadeUp .8s ease-out .5s both;
+}
+.hero-tags span{position:relative;padding:0 4px}
+.hero-tags span+span:before{content:"·";position:absolute;left:-12px;color:var(--gold)}
+
+/* ════════ RESERVATIONS ════════ */
+.reservations{
+  background:var(--bg-deep);
+  border:1px solid var(--line);
+  padding:26px 24px;
+  margin-bottom:48px;
+  position:relative;
+  animation:fadeUp .8s ease-out .6s both;
+}
+.reservations:before{
+  content:"";
+  position:absolute;
+  top:4px;left:4px;right:4px;bottom:4px;
+  border:1px solid var(--line-soft);
+  pointer-events:none;
+}
+.section-label{
+  font-family:'Nanum Myeongjo',serif;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.4em;
+  color:var(--accent);
+  text-transform:uppercase;
+  margin-bottom:18px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.section-label:after{content:"";flex:1;height:1px;background:var(--line)}
+.res-list{list-style:none;display:grid;gap:11px}
+.res-list li{
+  display:grid;grid-template-columns:auto 1fr;
+  gap:18px;align-items:baseline;font-size:14.5px;
+}
+.res-time{
+  font-family:'EB Garamond',serif;
+  font-style:italic;color:var(--muted);
+  font-size:12.5px;letter-spacing:.05em;white-space:nowrap;
+}
+.res-name{font-weight:500;color:var(--ink)}
+.res-name em{
+  color:var(--muted);
+  font-family:'EB Garamond',serif;
+  font-weight:400;
+  font-style:italic;
+}
+
+/* ════════ DAY TABS ════════ */
+.day-tabs{
+  position:sticky;
+  top:0;
+  z-index:50;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  padding:18px 0;
+  margin:0 -28px 36px;
+  padding-left:28px;
+  padding-right:28px;
+  background:linear-gradient(to bottom, var(--bg) 75%, transparent);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+@media(max-width:540px){
+  .day-tabs{margin:0 -20px 28px;padding-left:20px;padding-right:20px;gap:6px}
+}
+.day-tab{
+  position:relative;
+  background:var(--bg-deep);
+  border:1px solid var(--line);
+  padding:14px 6px 12px;
+  cursor:pointer;
+  font-family:'Noto Serif KR',serif;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  transition:all .35s cubic-bezier(.4,0,.2,1);
+  overflow:hidden;
+}
+.day-tab:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:var(--accent);
+  transform:scaleY(0);
+  transform-origin:bottom;
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+  z-index:0;
+}
+.day-tab > *{position:relative;z-index:1;transition:color .35s ease}
+.day-tab:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(26,23,20,.08)}
+.day-tab.active:before{transform:scaleY(1)}
+.day-tab.active{
+  border-color:var(--accent);
+  box-shadow:0 8px 24px rgba(122,32,48,.18);
+  transform:translateY(-1px);
+}
+.day-tab.active .tab-kanji,
+.day-tab.active .tab-day,
+.day-tab.active .tab-date,
+.day-tab.active .tab-tagline{color:var(--bg);}
+.day-tab.active .tab-day{color:var(--gold-soft)}
+.tab-kanji{
+  font-family:'Nanum Myeongjo',serif;
+  font-weight:800;font-size:30px;line-height:1;
+  color:var(--accent);
+  margin-bottom:4px;
+}
+@media(max-width:540px){.tab-kanji{font-size:26px}}
+.tab-day{
+  font-family:'EB Garamond',serif;
+  font-style:italic;font-size:11px;
+  letter-spacing:.2em;
+  color:var(--gold);
+  text-transform:uppercase;
+}
+.tab-date{
+  font-family:'EB Garamond',serif;
+  font-size:13px;
+  color:var(--ink);
+  letter-spacing:.04em;
+  font-variant-numeric:tabular-nums;
+  margin-top:1px;
+}
+.tab-tagline{
+  font-size:10.5px;
+  color:var(--muted);
+  letter-spacing:.01em;
+  margin-top:5px;
+  text-align:center;
+  line-height:1.3;
+}
+@media(max-width:380px){.tab-tagline{font-size:9.5px}}
+
+/* ════════ DAY PANEL ════════ */
+.day-panel{
+  display:none;
+}
+.day-panel.active{
+  display:block;
+  animation:slideUp .5s cubic-bezier(.4,0,.2,1);
+}
+.day-header{
+  display:flex;
+  align-items:flex-start;
+  gap:24px;
+  padding-bottom:24px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:32px;
+  animation:fadeUp .5s ease-out .1s both;
+}
+.day-num{
+  font-family:'Nanum Myeongjo',serif;
+  font-size:64px;font-weight:800;line-height:1;
+  color:var(--accent);
+  flex-shrink:0;
+  position:relative;
+}
+.day-num::after{
+  content:"";
+  position:absolute;
+  left:50%;bottom:-4px;
+  transform:translateX(-50%);
+  width:30px;height:2px;
+  background:var(--gold);
+}
+@media(max-width:540px){.day-num{font-size:52px}}
+.day-meta{flex:1;padding-top:4px}
+.day-date{
+  font-family:'EB Garamond',serif;
+  font-style:italic;font-size:14px;
+  color:var(--muted);
+  letter-spacing:.05em;margin-bottom:6px;
+}
+.day-route{
+  font-family:'Nanum Myeongjo',serif;
+  font-size:21px;font-weight:700;line-height:1.35;
+  color:var(--ink);
+  letter-spacing:-.005em;
+}
+
+/* ════════ SCHEDULE ════════ */
+.schedule{list-style:none;display:flex;flex-direction:column}
+.event{
+  display:grid;
+  grid-template-columns:64px 1fr;
+  gap:18px;
+  padding:18px 0 20px;
+  border-bottom:1px dashed var(--line-soft);
+  position:relative;
+  opacity:0;
+  animation:fadeUp .4s ease-out forwards;
+}
+.event:last-child{border-bottom:none}
+/* Stagger each event */
+.event:nth-child(1){animation-delay:.15s}
+.event:nth-child(2){animation-delay:.22s}
+.event:nth-child(3){animation-delay:.29s}
+.event:nth-child(4){animation-delay:.36s}
+.event:nth-child(5){animation-delay:.43s}
+.event:nth-child(6){animation-delay:.50s}
+.event:nth-child(7){animation-delay:.57s}
+.event:nth-child(8){animation-delay:.64s}
+
+.event-time{
+  font-family:'EB Garamond',serif;
+  font-size:15px;font-weight:500;
+  color:var(--accent);
+  letter-spacing:.03em;
+  padding-top:3px;
+  font-variant-numeric:tabular-nums;
+  position:relative;
+}
+.event-time::before{
+  content:"";
+  position:absolute;
+  right:-12px;top:11px;
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--accent);
+  opacity:.3;
+  transition:all .3s;
+}
+.event:hover .event-time::before{opacity:1;transform:scale(1.5);box-shadow:0 0 0 4px rgba(122,32,48,.1)}
+.event-body{min-width:0}
+.event-title{
+  font-family:'Noto Serif KR',serif;
+  font-size:17px;font-weight:600;color:var(--ink);
+  line-height:1.4;margin-bottom:6px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.badge{
+  display:inline-flex;align-items:center;
+  font-family:'EB Garamond',serif;
+  font-style:italic;font-size:11px;font-weight:500;
+  letter-spacing:.15em;
+  padding:2px 8px;
+  background:var(--accent);color:var(--bg);
+  text-transform:uppercase;border-radius:1px;
+  animation:pulse 2s ease-in-out infinite;
+}
+.badge.alt{background:transparent;color:var(--gold);border:1px solid var(--gold);animation:none}
+.badge.warn{background:transparent;color:var(--accent);border:1px solid var(--accent-soft);animation:none}
+.event-meta{
+  font-family:'EB Garamond',serif;
+  font-style:italic;font-size:13px;
+  color:var(--muted);margin-bottom:8px;
+  letter-spacing:.02em;
+}
+.event-meta .sep{margin:0 8px;color:var(--gold)}
+.event-note{
+  font-size:13.5px;color:var(--ink-soft);
+  line-height:1.65;margin-top:4px;
+}
+.event-link{
+  display:inline-block;
+  font-family:'EB Garamond',serif;
+  font-style:italic;font-size:12.5px;
+  color:var(--accent);text-decoration:none;
+  border-bottom:1px solid var(--accent-soft);padding-bottom:1px;
+  margin-top:8px;
+  transition:all .25s;
+}
+.event-link:hover{color:var(--ink);border-color:var(--ink);transform:translateX(2px)}
+.event-link:before{content:"↗ "}
+
+/* ════════ MAP ════════ */
+.day-map-wrap{
+  margin-top:36px;
+  padding-top:28px;
+  border-top:1px dashed var(--line);
+  animation:fadeUp .5s ease-out .7s both;
+}
+.map-title{
+  font-family:'Nanum Myeongjo',serif;
+  font-size:12px;font-weight:700;
+  letter-spacing:.35em;color:var(--accent);
+  text-transform:uppercase;
+  margin-bottom:16px;
+  display:flex;align-items:center;gap:12px;
+}
+.map-title:after{content:"";flex:1;height:1px;background:var(--line)}
+.day-map{
+  width:100%;
+  height:380px;
+  margin-bottom:14px;
+  border:1px solid var(--line);
+  display:block;
+  background:linear-gradient(135deg, #ECE4D0 0%, #E5DCC4 100%);
+  position:relative;
+  overflow:hidden;
+}
+.day-map:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.4), transparent);
+  background-size:200% 100%;
+  animation:shimmer 2.5s ease-in-out infinite;
+  pointer-events:none;
+  opacity:.5;
+}
+.day-map.loaded:before{display:none}
+@media(max-width:540px){.day-map{height:320px}}
+.leaflet-container{
+  background:#ECE4D0 !important;
+  font-family:'EB Garamond',serif !important;
+  outline:none;
+}
+.day-marker{
+  background:var(--accent);
+  color:var(--bg);
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'EB Garamond',serif;font-weight:500;font-size:14px;
+  border:2px solid var(--bg);
+  box-shadow:0 2px 8px rgba(26,23,20,.25);
+  font-variant-numeric:tabular-nums;
+  transition:transform .25s;
+}
+.day-marker:hover{transform:scale(1.15)}
+.hotel-marker{
+  background:var(--gold);color:#fff;
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Nanum Myeongjo',serif;font-weight:700;font-size:13px;
+  border:2px solid var(--bg);
+  box-shadow:0 0 0 4px rgba(168,133,74,.2), 0 2px 10px rgba(168,133,74,.5);
+  animation:pulse 3s ease-in-out infinite;
+}
+.leaflet-div-icon{background:transparent !important;border:none !important}
+.leaflet-popup-content-wrapper{
+  background:var(--bg) !important;border-radius:2px !important;
+  box-shadow:0 4px 16px rgba(26,23,20,.18) !important;
+  border:1px solid var(--line) !important;
+}
+.leaflet-popup-content{
+  font-family:'Noto Serif KR',serif !important;
+  font-size:13px !important;color:var(--ink) !important;
+  margin:10px 14px !important;line-height:1.5 !important;
+}
+.leaflet-popup-content strong{display:block;margin-bottom:3px;color:var(--accent);font-weight:600}
+.leaflet-popup-content em{font-family:'EB Garamond',serif;font-style:italic;color:var(--muted);font-size:12px}
+.leaflet-popup-tip{background:var(--bg) !important}
+.leaflet-control-attribution{
+  font-family:'EB Garamond',serif !important;font-size:9px !important;
+  background:rgba(244,239,227,.85) !important;
+}
+.leaflet-control-zoom a{
+  background:var(--bg) !important;color:var(--accent) !important;
+  border-bottom:1px solid var(--line) !important;
+  font-family:'EB Garamond',serif !important;
+}
+.map-caption{
+  font-family:'EB Garamond',serif;
+  font-style:italic;font-size:12px;
+  color:var(--muted);text-align:center;
+  margin-top:10px;letter-spacing:.05em;
+}
+
+/* ════════ ROUTE BUTTON ════════ */
+.route-btn{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--accent);color:var(--bg);
+  font-family:'Noto Serif KR',serif;
+  font-size:14px;font-weight:500;
+  padding:16px 22px;text-decoration:none;
+  letter-spacing:.02em;border-radius:2px;
+  margin-top:14px;
+  position:relative;
+  overflow:hidden;
+  transition:all .35s;
+}
+.route-btn:before{
+  content:"";
+  position:absolute;inset:0;
+  background:linear-gradient(135deg, var(--accent-deep), var(--accent));
+  opacity:0;
+  transition:opacity .35s;
+}
+.route-btn:hover:before,.route-btn:active:before{opacity:1}
+.route-btn > *{position:relative;z-index:1}
+.route-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(122,32,48,.3)}
+.route-btn .arrow{
+  font-family:'EB Garamond',serif;font-style:italic;
+  font-size:18px;margin-left:8px;
+  transition:transform .25s;
+}
+.route-btn:hover .arrow{transform:translate(3px,-3px)}
+.route-btn small{
+  display:block;font-family:'EB Garamond',serif;
+  font-style:italic;font-size:11px;opacity:.7;
+  letter-spacing:.05em;margin-top:2px;font-weight:400;
+}
+
+/* ════════ ORNAMENT ════════ */
+.ornament{
+  display:flex;align-items:center;justify-content:center;
+  margin:48px 0;gap:14px;
+  color:var(--gold);font-size:11px;letter-spacing:.4em;
+}
+.ornament:before,.ornament:after{
+  content:"";flex:1;max-width:80px;height:1px;
+  background:var(--gold);opacity:.5;
+}
+.ornament span{font-family:'Nanum Myeongjo',serif}
+
+/* ════════ PANEL (baking) ════════ */
+.panel{
+  margin-top:56px;padding:30px 26px;
+  background:var(--bg-deep);
+  border:1px solid var(--line);
+  position:relative;
+}
+.panel h3{
+  font-family:'Nanum Myeongjo',serif;
+  font-size:19px;font-weight:700;color:var(--ink);
+  margin-bottom:18px;letter-spacing:-.005em;
+}
+.panel-section+.panel-section{
+  margin-top:20px;padding-top:20px;
+  border-top:1px dashed var(--line);
+}
+.panel-section h4{
+  font-family:'Nanum Myeongjo',serif;
+  font-size:13px;font-weight:700;color:var(--accent);
+  margin-bottom:8px;letter-spacing:.02em;
+}
+.panel-section p{
+  font-size:13.5px;color:var(--ink-soft);line-height:1.7;
+}
+.panel-section .label{
+  font-family:'EB Garamond',serif;font-style:italic;
+  color:var(--muted);font-size:12.5px;margin-right:6px;
+}
+
+/* ════════ WARNINGS ════════ */
+.warnings{
+  margin-top:48px;border-top:1px solid var(--line);padding-top:36px;
+}
+.warnings ul{list-style:none;display:grid;gap:12px}
+.warnings li{
+  display:grid;grid-template-columns:auto 1fr;gap:12px;
+  font-size:13.5px;line-height:1.65;color:var(--ink-soft);
+}
+.warnings li:before{
+  content:"※";
+  color:var(--accent);
+  font-weight:700;
+  font-family:'Nanum Myeongjo',serif;
+}
+
+/* ════════ FOOTER ════════ */
+footer{
+  margin-top:64px;padding-top:32px;
+  border-top:1px solid var(--line);
+  text-align:center;
+  font-family:'EB Garamond',serif;
+  font-style:italic;font-size:13px;
+  color:var(--muted);letter-spacing:.04em;
+}
+footer .mark{
+  display:block;
+  font-family:'Nanum Myeongjo',serif;
+  font-size:18px;color:var(--accent);
+  margin-bottom:8px;font-style:normal;letter-spacing:.3em;
+}
+
+@media print{
+  body{background:white}
+  main{max-width:none;padding:20px}
+  .day-tabs{display:none}
+  .day-panel{display:block !important;page-break-after:always}
+  .day-map{display:none}
+  .route-btn{background:transparent !important;color:var(--accent) !important;border:1px solid var(--accent)}
+  .hero-bg{display:none}
+}
+</style>
+</head>
+<body>
+<main>
+
+  <!-- ═════════ HERO ═════════ -->
+  <header class="hero">
+    <div class="hero-bg">TOKYO</div>
+    <div class="hero-content">
+      <p class="hero-mark">東 京 旅</p>
+      <h1 class="hero-title">A Weekend<br>in <em>Tokyo</em></h1>
+      <p class="hero-dates">June 5 — 7, 2026 · 금토일</p>
+      <p class="hero-base">Based in <em>Nishihara, Shibuya</em> · 西原 1-12-4</p>
+      <p class="hero-tags"><span>美食</span><span>베이킹</span><span>커피</span><span>와인</span></p>
+    </div>
+  </header>
+
+  <!-- ═════════ RESERVATIONS ═════════ -->
+  <section class="reservations">
+    <h2 class="section-label">예약 확정 · Reservations</h2>
+    <ul class="res-list">
+      <li><span class="res-time" style="color:var(--gold)">숙소 · STAY</span><span class="res-name">Nishihara 1-12-4, Shibuya <em>— EQUAL 도보 3분</em></span></li>
+      <li><span class="res-time">6/5 금 · 11:30</span><span class="res-name">스시 야마토 <em>— 츠키지</em></span></li>
+      <li><span class="res-time">6/6 토 · 20:15</span><span class="res-name">토리사와 22 <em>— 니시아자부</em></span></li>
+      <li><span class="res-time">6/7 일 · 14:00</span><span class="res-name">코타로 <em>— 시부야</em></span></li>
+    </ul>
+  </section>
+
+  <!-- ═════════ DAY TABS ═════════ -->
+  <nav class="day-tabs" role="tablist">
+    <button class="day-tab active" data-day="1" role="tab" aria-selected="true">
+      <span class="tab-kanji">壱</span>
+      <span class="tab-day">FRI</span>
+      <span class="tab-date">06.05</span>
+      <span class="tab-tagline">츠키지 · 갓파바시</span>
+    </button>
+    <button class="day-tab" data-day="2" role="tab" aria-selected="false">
+      <span class="tab-kanji">弐</span>
+      <span class="tab-day">SAT</span>
+      <span class="tab-date">06.06</span>
+      <span class="tab-tagline">야요기 · 니시아자부</span>
+    </button>
+    <button class="day-tab" data-day="3" role="tab" aria-selected="false">
+      <span class="tab-kanji">参</span>
+      <span class="tab-day">SUN</span>
+      <span class="tab-date">06.07</span>
+      <span class="tab-tagline">다이칸야마 · 시부야</span>
+    </button>
+  </nav>
+
+  <!-- ═════════ DAY 1 ═════════ -->
+  <section class="day-panel active" data-day="1" role="tabpanel">
+    <header class="day-header">
+      <div class="day-num">壱</div>
+      <div class="day-meta">
+        <p class="day-date">June 5, Friday · 6월 5일 금요일</p>
+        <h2 class="day-route">츠키지 → 갓파바시 → 니시아자부</h2>
+      </div>
+    </header>
+    <ol class="schedule">
+      <li class="event">
+        <div class="event-time">11:30</div>
+        <div class="event-body">
+          <h3 class="event-title">스시 야마토 <span class="badge">예약</span></h3>
+          <p class="event-meta">寿司ヤマト<span class="sep">·</span>츠키지</p>
+          <p class="event-note">8석 카운터 오마카세. 약 1시간 소요</p>
+          <a class="event-link" href="https://maps.google.com/?cid=9145564862110981324" target="_blank">지도 보기</a>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">13:30</div>
+        <div class="event-body">
+          <h3 class="event-title">갓파바시 도구가이</h3>
+          <p class="event-meta">合羽橋道具街<span class="sep">·</span>아사쿠사</p>
+          <p class="event-note">
+            <strong>Kama-Asa</strong> 釜浅商店 — 일식 칼 명가, 영문 응대, 무료 각인<br>
+            <strong>Majimaya</strong> 馬嶋屋 — 일본 베이킹 도구 성지, 5층 가득<br>
+            <strong>Tsubaya</strong> 飛塚屋 — 칼 풀라인업<br>
+            <strong>Iidaya</strong> 飯田屋 — 주방·제과 도구
+          </p>
+          <p class="event-note" style="margin-top:10px;color:var(--accent-soft);font-style:italic;font-size:13px">
+            ※ 대부분 17:00 – 17:30 마감
+          </p>
+          <a class="event-link" href="https://maps.google.com/?cid=17158542540331966183" target="_blank">Kama-Asa</a>
+          &nbsp;&nbsp;
+          <a class="event-link" href="https://maps.google.com/?cid=4043661618892171968" target="_blank">Majimaya</a>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">17:00</div>
+        <div class="event-body">
+          <h3 class="event-title">긴자 — Dover Street Market <span class="badge alt">선택</span></h3>
+          <p class="event-meta">DSMG<span class="sep">·</span>긴자</p>
+          <p class="event-note">7층 큐레이션 럭셔리·스트리트. 옥상정원 보너스. 약 1시간이면 충분</p>
+          <a class="event-link" href="https://maps.google.com/?cid=1517497822398743845" target="_blank">지도 보기</a>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">18:30</div>
+        <div class="event-body">
+          <h3 class="event-title">이세 스에요시 <span class="badge warn">예약 필요</span></h3>
+          <p class="event-meta">伊勢すえよし<span class="sep">·</span>니시아자부 — 가이세키</p>
+          <p class="event-note">⭐ 4.9. Ise현 식재료, 사케·와인 페어링. Bunon 도보 1분. 2주 전 예약 시도 권장</p>
+          <p class="event-note" style="margin-top:6px;font-style:italic;color:var(--muted);font-size:12.5px">
+            대안: 텐푸라 미카와 케야키자카 · 노다이와 우나기 본점
+          </p>
+          <a class="event-link" href="https://maps.google.com/?cid=3393061192175723667" target="_blank">지도 보기</a>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">21:30</div>
+        <div class="event-body">
+          <h3 class="event-title">Bunon</h3>
+          <p class="event-meta">ブノン<span class="sep">·</span>니시아자부 — 내추럴 와인바</p>
+          <p class="event-note">일본 옛집 개조 공간. 토·일 휴무라 <strong>금요일이 유일한 기회</strong></p>
+          <a class="event-link" href="https://maps.google.com/?cid=9911608432395567755" target="_blank">지도 보기</a>
+        </div>
+      </li>
+    </ol>
+    <div class="day-map-wrap">
+      <h3 class="map-title">동선 · Route</h3>
+      <div id="map-day1" class="day-map"></div>
+      <p class="map-caption">숙소에서 츠키지 → 갓파바시 북상 → 니시아자부 남하</p>
+      <a class="route-btn" href="https://www.google.com/maps/dir/?api=1&origin=35.674802,139.6804373&destination=35.65864,139.72325&waypoints=35.667917,139.77375%7C35.713848,139.788677%7C35.712543,139.788665%7C35.714479,139.789159%7C35.670432,139.763143%7C35.658653,139.723538&travelmode=transit" target="_blank">
+        <span>Google 지도로 동선 열기<small>지도 앱에서 길찾기 시작</small></span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═════════ DAY 2 ═════════ -->
+  <section class="day-panel" data-day="2" role="tabpanel">
+    <header class="day-header">
+      <div class="day-num">弐</div>
+      <div class="day-meta">
+        <p class="day-date">June 6, Saturday · 6월 6일 토요일</p>
+        <h2 class="day-route">야요기우에하라 → 오모테산도 → 니시아자부</h2>
+      </div>
+    </header>
+    <ol class="schedule">
+      <li class="event">
+        <div class="event-time">10:00</div>
+        <div class="event-body">
+          <h3 class="event-title">EQUAL <span class="badge alt">★</span></h3>
+          <p class="event-meta">エクアル<span class="sep">·</span>야요기우에하라 — 구토 셰프 파티스리</p>
+          <p class="event-note">숙소에서 도보 3분. 오픈 직전 도착 권장. 슈크림·치즈케이크·피그 타르트. 토요일 줄 길 수 있음</p>
+          <a class="event-link" href="https://maps.google.com/?cid=4187015903789182948" target="_blank">지도 보기</a>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">10:45</div>
+        <div class="event-body">
+          <h3 class="event-title">365 Days</h3>
+          <p class="event-meta">토미가야<span class="sep">·</span>컬트 베이커리</p>
+          <p class="event-note">EQUAL에서 도보 2분. 매챠·팥 빵, 핫 크로크. 자리 거의 없어 테이크아웃</p>
+          <a class="event-link" href="https://maps.google.com/?cid=9609141995546953833" target="_blank">지도 보기</a>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">11:20</div>
+        <div class="event-body">
+          <h3 class="event-title">Fuglen Tokyo</h3>
+          <p class="event-meta">フグレントウキョウ<span class="sep">·</span>토미가야 — 커피</p>
+          <p class="event-note">365의 빵 들고 커피. 노르웨이 로스터리, 도쿄 3호점</p>
+          <a class="event-link" href="https://maps.google.com/?cid=17164645774726874279" target="_blank">지도 보기</a>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">12:30</div>
+        <div class="event-body">
+          <h3 class="event-title">점심 — 마이센 아오야마 본점</h3>
+          <p class="event-meta">まい泉<span class="sep">·</span>아오야마 — 토카츠</p>
+          <p class="event-note">저녁 야키토리 대비 가볍게. 대안: 노다이와 우나기 · 소바</p>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">14:00</div>
+        <div class="event-body">
+          <h3 class="event-title">쇼핑 — 오모테산도 · 아오야마 · 캣스트리트</h3>
+          <p class="event-meta">表参道<span class="sep">·</span>青山<span class="sep">·</span>キャットストリート</p>
+          <p class="event-note">
+            <strong>둘 다:</strong> BEAMS / BEAMS+ · United Arrows · GYRE · Omotesando Hills · A.P.C. · Maison Kitsuné<br>
+            <strong>남성:</strong> Comme des Garçons 아오야마 본점 · NEIGHBORHOOD · Visvim<br>
+            <strong>여성:</strong> Issey Miyake · Y's (요지 야마모토) · Mame Kurogouchi · Sacai
+          </p>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">19:00</div>
+        <div class="event-body">
+          <h3 class="event-title">S TOKYO</h3>
+          <p class="event-meta">니시아자부 — 사전 와인</p>
+          <p class="event-note">자체 와이너리 있는 히든 바. 토리사와22 도보 3분</p>
+          <a class="event-link" href="https://maps.google.com/?cid=17790191710977893504" target="_blank">지도 보기</a>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">20:15</div>
+        <div class="event-body">
+          <h3 class="event-title">토리사와 22 <span class="badge">예약</span></h3>
+          <p class="event-meta">鳥さわ22<span class="sep">·</span>니시아자부 — 야키토리 오마카세</p>
+          <p class="event-note">코스 약 2시간. ⭐ 4.4</p>
+          <a class="event-link" href="https://maps.google.com/?cid=4262536461407472341" target="_blank">지도 보기</a>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">22:45</div>
+        <div class="event-body">
+          <h3 class="event-title">WALL_alternative</h3>
+          <p class="event-meta">니시아자부 — 와인바 마무리</p>
+          <p class="event-note">갤러리 겸 내추럴 와인바. 도보 1분</p>
+          <a class="event-link" href="https://maps.google.com/?cid=3217577511178205762" target="_blank">지도 보기</a>
+        </div>
+      </li>
+    </ol>
+    <div class="day-map-wrap">
+      <h3 class="map-title">동선 · Route</h3>
+      <div id="map-day2" class="day-map"></div>
+      <p class="map-caption">숙소에서 EQUAL 도보 3분 — 아침은 전부 도보권</p>
+      <a class="route-btn" href="https://www.google.com/maps/dir/?api=1&origin=35.674802,139.6804373&destination=35.65821,139.72361&waypoints=35.67503,139.6787%7C35.669775,139.689561%7C35.66662,139.6924%7C35.6675,139.7126%7C35.665572,139.704765%7C35.65724,139.72297%7C35.65816,139.71872&travelmode=transit" target="_blank">
+        <span>Google 지도로 동선 열기<small>아침은 도보, 오후엔 지하철/택시</small></span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═════════ DAY 3 ═════════ -->
+  <section class="day-panel" data-day="3" role="tabpanel">
+    <header class="day-header">
+      <div class="day-num">参</div>
+      <div class="day-meta">
+        <p class="day-date">June 7, Sunday · 6월 7일 일요일</p>
+        <h2 class="day-route">토미가야 → 다이칸야마 → 시부야</h2>
+      </div>
+    </header>
+    <ol class="schedule">
+      <li class="event">
+        <div class="event-time">08:30</div>
+        <div class="event-body">
+          <h3 class="event-title">Path</h3>
+          <p class="event-meta">토미가야 — 브런치</p>
+          <p class="event-note">더치 팬케이크 + 파르마햄·부라타. 30분 굽는 시간 → 8시 오픈 맞춰 일찍 줄</p>
+          <a class="event-link" href="https://maps.google.com/?cid=15605256470079840928" target="_blank">지도 보기</a>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">11:00</div>
+        <div class="event-body">
+          <h3 class="event-title">다이칸야마 — T-Site & 부티크</h3>
+          <p class="event-meta">代官山<span class="sep">·</span>쇼핑 산책</p>
+          <p class="event-note">
+            <strong>T-Site (츠타야)</strong> 책방 · <strong>Maison Kitsuné</strong> · <strong>A.P.C.</strong><br>
+            <strong>1LDK</strong> 일본 셀렉트샵 · <strong>Hollywood Ranch Market</strong> 빈티지
+          </p>
+          <a class="event-link" href="https://maps.google.com/?cid=16984859993834332588" target="_blank">T-Site</a>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">13:30</div>
+        <div class="event-body">
+          <h3 class="event-title">시부야로 이동</h3>
+          <p class="event-meta">다이칸야마 → 시부야 · 도보 20분 또는 택시 5분</p>
+        </div>
+      </li>
+      <li class="event">
+        <div class="event-time">14:00</div>
+        <div class="event-body">
+          <h3 class="event-title">코타로 <span class="badge">예약</span></h3>
+          <p class="event-meta">コタロ<span class="sep">·</span>시부야 사쿠라가오카 — 이자카야·캇포</p>
+          <p class="event-note">⭐ 4.3. 일요일 14시 오픈, 2시간 코스</p>
+          <a class="event-link" href="https://maps.google.com/?cid=9358029681520108219" target="_blank">지도 보기</a>
+        </div>
+      </li>
+    </ol>
+    <div class="day-map-wrap">
+      <h3 class="map-title">동선 · Route</h3>
+      <div id="map-day3" class="day-map"></div>
+      <p class="map-caption">대부분 도보권 · Path까지 도보 12분</p>
+      <a class="route-btn" href="https://www.google.com/maps/dir/?api=1&origin=35.674802,139.6804373&destination=35.65556,139.69928&waypoints=35.668513,139.68991%7C35.649059,139.699622%7C35.649365,139.7008998&travelmode=walking" target="_blank">
+        <span>Google 지도로 동선 열기<small>도보 중심 · 천천히 산책</small></span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="ornament"><span>旅</span></div>
+
+  <!-- ═════════ BAKING NOTES ═════════ -->
+  <aside class="panel">
+    <h3>베이킹 · 굿즈 노트</h3>
+    <div class="panel-section">
+      <h4>칼 & 도구 (갓파바시)</h4>
+      <p><span class="label">Kama-Asa</span>일식 칼, 무료 각인, 호텔 배송 가능</p>
+      <p><span class="label">Majimaya</span>쿠키 커터·실리코마트 몰드 — 베이커 천국</p>
+      <p><span class="label">Iidaya</span>제과·제빵 도구 풀라인</p>
+    </div>
+    <div class="panel-section">
+      <h4>베이킹 재료</h4>
+      <p><span class="label">Tomiz 유라쿠초 LUMINE</span>밀가루·쿠베르튀르·바닐라 — 토요일 긴자 동선이면 들르기</p>
+    </div>
+    <div class="panel-section">
+      <h4>파티스리 · 베이커리</h4>
+      <p><span class="label">EQUAL</span>구토 셰프 · 슈크림·피그타르트 (토 10시)</p>
+      <p><span class="label">365 Days</span>토미가야 컬트 베이커리 (토 10:45)</p>
+      <p><span class="label">Path</span>더치 팬케이크 (일 8:30)</p>
+      <p><span class="label">ÉCHIRÉ Marunouchi</span>피낭시에·마들렌 — 오픈 직후 안 가면 매진</p>
+    </div>
+  </aside>
+
+  <!-- ═════════ WARNINGS ═════════ -->
+  <section class="warnings">
+    <h2 class="section-label">체크포인트 · Notes</h2>
+    <ul>
+      <li><div><strong>Bunon</strong> 토·일 휴무 → 금요일 밤 유일한 기회</div></li>
+      <li><div><strong>S TOKYO / WALL_alternative</strong> 일요일 휴무</div></li>
+      <li><div><strong>EQUAL</strong> 월·화·수 휴무 (목~일 영업)</div></li>
+      <li><div><strong>Path</strong> 월·화 휴무, 일요일 8~15시</div></li>
+      <li><div><strong>이세 스에요시</strong> 예약 매우 어려움 — 빠른 시도 권장</div></li>
+      <li><div><strong>갓파바시</strong> 대부분 17:00 – 17:30 마감, 일찍 시작</div></li>
+      <li><div><strong>칼</strong>은 위탁수하물로만 가능. 매장에서 호텔 배송 처리 가능</div></li>
+      <li><div><strong>면세</strong> 5,000엔 이상 구매 시 여권 필요</div></li>
+    </ul>
+  </section>
+
+  <footer>
+    <span class="mark">良 い 旅</span>
+    Tokyo · June 2026
+  </footer>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+  /* ════════ TAB SWITCHING ════════ */
+  var tabs = document.querySelectorAll('.day-tab');
+  var panels = document.querySelectorAll('.day-panel');
+  var mapsInited = {};
+
+  function switchDay(day) {
+    tabs.forEach(function(t){
+      var isActive = t.getAttribute('data-day') === day;
+      t.classList.toggle('active', isActive);
+      t.setAttribute('aria-selected', isActive);
+    });
+    panels.forEach(function(p){
+      p.classList.toggle('active', p.getAttribute('data-day') === day);
+    });
+
+    // Restart event animations
+    var activePanel = document.querySelector('.day-panel.active');
+    if (activePanel) {
+      activePanel.querySelectorAll('.event').forEach(function(e){
+        e.style.animation = 'none';
+        void e.offsetWidth;
+        e.style.animation = '';
+      });
+    }
+
+    // Init map if not yet
+    initMap(day);
+
+    // Scroll to top of day section
+    setTimeout(function(){
+      var tabsEl = document.querySelector('.day-tabs');
+      if (tabsEl) {
+        var rect = tabsEl.getBoundingClientRect();
+        if (rect.top < 0) {
+          window.scrollTo({top: window.scrollY + rect.top - 8, behavior:'smooth'});
+        }
+      }
+    }, 50);
+  }
+
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      switchDay(t.getAttribute('data-day'));
+    });
+  });
+
+  /* ════════ MAP INIT (lazy per day) ════════ */
+  var HOTEL = {lat: 35.674802, lng: 139.6804373, name: '숙소', meta: 'Nishihara 1-12-4', isHotel: true};
+
+  var DAYS_DATA = {
+    '1': [
+      HOTEL,
+      {lat: 35.667917, lng: 139.77375,   name: '스시 야마토',         meta: '11:30 · 점심 (츠키지)'},
+      {lat: 35.713848, lng: 139.788677,  name: 'Kama-Asa',            meta: '13:30 · 칼 (갓파바시)'},
+      {lat: 35.712543, lng: 139.788665,  name: 'Majimaya',            meta: '14:30 · 베이킹 도구'},
+      {lat: 35.714479, lng: 139.789159,  name: 'Tsubaya',             meta: '15:30 · 칼'},
+      {lat: 35.670432, lng: 139.763143,  name: 'Dover Street Market', meta: '17:00 · 선택 (긴자)'},
+      {lat: 35.658653, lng: 139.723538,  name: '이세 스에요시',        meta: '18:30 · 가이세키'},
+      {lat: 35.65864,  lng: 139.72325,   name: 'Bunon',               meta: '21:30 · 와인바'}
+    ],
+    '2': [
+      HOTEL,
+      {lat: 35.67503,  lng: 139.6787,    name: 'EQUAL',               meta: '10:00 · 파티스리 (도보 3분)'},
+      {lat: 35.669775, lng: 139.689561,  name: '365 Days',            meta: '10:45 · 베이커리'},
+      {lat: 35.66662,  lng: 139.6924,    name: 'Fuglen Tokyo',        meta: '11:20 · 커피'},
+      {lat: 35.6675,   lng: 139.7126,    name: '마이센 아오야마',      meta: '12:30 · 점심'},
+      {lat: 35.665572, lng: 139.704765,  name: '오모테산도 쇼핑',      meta: '14:00 · 쇼핑'},
+      {lat: 35.65724,  lng: 139.72297,   name: 'S TOKYO',             meta: '19:00 · 와인'},
+      {lat: 35.65816,  lng: 139.71872,   name: '토리사와 22',          meta: '20:15 · 저녁 \u2705'},
+      {lat: 35.65821,  lng: 139.72361,   name: 'WALL_alternative',    meta: '22:45 · 와인바'}
+    ],
+    '3': [
+      HOTEL,
+      {lat: 35.668513, lng: 139.68991,   name: 'Path',                meta: '08:30 · 브런치'},
+      {lat: 35.649059, lng: 139.699622,  name: '다이칸야마 T-Site',    meta: '11:00 · 쇼핑'},
+      {lat: 35.649365, lng: 139.7008998, name: 'Maison Kitsuné',      meta: '12:00 · 쇼핑'},
+      {lat: 35.65556,  lng: 139.69928,   name: '코타로',              meta: '14:00 · 점심 \u2705'}
+    ]
+  };
+
+  function tryInit(day) {
+    var el = document.getElementById('map-day' + day);
+    if (!el || mapsInited[day]) return;
+
+    if (typeof L === 'undefined') {
+      if (!window.__leafRetry) window.__leafRetry = 0;
+      if (window.__leafRetry++ < 20) {
+        setTimeout(function(){ tryInit(day); }, 250);
+      }
+      return;
+    }
+
+    mapsInited[day] = true;
+    var locations = DAYS_DATA[day];
+
+    var map = L.map(el, {
+      scrollWheelZoom: false,
+      zoomControl: true
+    });
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap · CARTO',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
+
+    var points = locations.map(function(l){ return [l.lat, l.lng]; });
+
+    // Animated polyline draw
+    var polyline = L.polyline([], {
+      color: '#7A2030',
+      weight: 2.8,
+      opacity: 0.75,
+      dashArray: '6,8'
+    }).addTo(map);
+
+    var drawnPoints = [];
+    var idx = 0;
+    function drawNext() {
+      if (idx < points.length) {
+        drawnPoints.push(points[idx]);
+        polyline.setLatLngs(drawnPoints);
+        idx++;
+        setTimeout(drawNext, 180);
+      }
+    }
+
+    var stopNum = 0;
+    locations.forEach(function(loc, i){
+      setTimeout(function(){
+        var markerHtml;
+        if (loc.isHotel) {
+          markerHtml = '<div class="hotel-marker">宿</div>';
+        } else {
+          stopNum++;
+          markerHtml = '<div class="day-marker">' + stopNum + '</div>';
+        }
+        var icon = L.divIcon({
+          className: '',
+          html: markerHtml,
+          iconSize: loc.isHotel ? [34, 34] : [28, 28],
+          iconAnchor: loc.isHotel ? [17, 17] : [14, 14],
+          popupAnchor: [0, -14]
+        });
+        L.marker([loc.lat, loc.lng], {icon: icon})
+          .addTo(map)
+          .bindPopup('<strong>' + loc.name + '</strong><em>' + loc.meta + '</em>');
+      }, i * 180);
+    });
+
+    map.fitBounds(L.latLngBounds(points), {padding: [40, 30]});
+    setTimeout(drawNext, 100);
+
+    el.classList.add('loaded');
+
+    el.addEventListener('click', function(){ map.scrollWheelZoom.enable(); });
+    el.addEventListener('mouseleave', function(){ map.scrollWheelZoom.disable(); });
+  }
+
+  function initMap(day) {
+    setTimeout(function(){ tryInit(day); }, 100);
+  }
+
+  // Initial: load day 1 map
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){ initMap('1'); });
+  } else {
+    initMap('1');
+  }
+})();
+</script>
+
+</body>
+</html>
