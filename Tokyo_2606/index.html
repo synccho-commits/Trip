@@ -697,16 +697,24 @@ footer .mark{
       <div class="day-num">壱</div>
       <div class="day-meta">
         <p class="day-date">June 5, Friday · 6월 5일 금요일</p>
-        <h2 class="day-route">츠키지 → 갓파바시 → 니시아자부</h2>
+        <h2 class="day-route">츠키지 → 갓파바시 → 진보초 → 니시아자부</h2>
       </div>
     </header>
     <ol class="schedule">
       <li class="event">
+        <div class="event-time">10:00</div>
+        <div class="event-body">
+          <h3 class="event-title">하네다/나리타 도착 <span class="badge alt">도착</span></h3>
+          <p class="event-meta">공항 → 숙소(Nishihara) — 짐 맡기기</p>
+          <p class="event-note">하네다면 호텔까지 약 45분 · 나리타면 80~90분. 짐 맡기고 11:30~12:00 사이 출발 가능</p>
+        </div>
+      </li>
+      <li class="event">
         <div class="event-time">11:30</div>
         <div class="event-body">
-          <h3 class="event-title">스시 야마토 <span class="badge">예약</span></h3>
+          <h3 class="event-title">스시 야마토 <span class="badge">예약</span> <span class="badge warn">시간 빠듯</span></h3>
           <p class="event-meta">寿司ヤマト<span class="sep">·</span>츠키지</p>
-          <p class="event-note">8석 카운터 오마카세. 약 1시간 소요</p>
+          <p class="event-note">⚠️ 10시 도착이면 11:30은 거의 불가. <strong>13:00으로 재예약 시도 권장</strong> (전화). 안 되면 캔슬 후 갓파바시 근처에서 라이트 점심으로 전환</p>
           <a class="event-link" href="https://maps.google.com/?cid=9145564862110981324" target="_blank">지도 보기</a>
         </div>
       </li>
@@ -732,10 +740,13 @@ footer .mark{
       <li class="event">
         <div class="event-time">17:00</div>
         <div class="event-body">
-          <h3 class="event-title">긴자 — Dover Street Market <span class="badge alt">선택</span></h3>
-          <p class="event-meta">DSMG<span class="sep">·</span>긴자</p>
-          <p class="event-note">7층 큐레이션 럭셔리·스트리트. 옥상정원 보너스. 약 1시간이면 충분</p>
-          <a class="event-link" href="https://maps.google.com/?cid=1517497822398743845" target="_blank">지도 보기</a>
+          <h3 class="event-title">Glitch Coffee 진보초 본점 <span class="badge alt">★</span></h3>
+          <p class="event-meta">グリッチコーヒー<span class="sep">·</span>진보초 — 스페셜티 커피</p>
+          <p class="event-note">⭐ 4.4. 단일 산지 푸어오버 도쿄 정상. <strong>Pour Over Flight</strong> 추천 — 3종 비교 (acai·enigma hops 발효 같은 독특한 콩). 갓파바시 → 진보초 긴자선 5분. 저녁 가이세키 전 워밍업 커피</p>
+          <p class="event-note" style="margin-top:6px;font-style:italic;color:var(--muted);font-size:12.5px">
+            대안: 시간 여유 없으면 DSMG(긴자)도 같은 동선상 가능
+          </p>
+          <a class="event-link" href="https://www.google.com/maps/place/?q=place_id:ChIJDxYKIhCMGGARScnqzc-T-TU" target="_blank">지도 보기</a>
         </div>
       </li>
       <li class="event">
@@ -763,8 +774,8 @@ footer .mark{
     <div class="day-map-wrap">
       <h3 class="map-title">동선 · Route</h3>
       <div id="map-day1" class="day-map"></div>
-      <p class="map-caption">숙소에서 츠키지 → 갓파바시 북상 → 니시아자부 남하</p>
-      <a class="route-btn" href="https://www.google.com/maps/dir/?api=1&origin=35.674802,139.6804373&destination=35.65864,139.72325&waypoints=35.667917,139.77375%7C35.713848,139.788677%7C35.712543,139.788665%7C35.714479,139.789159%7C35.670432,139.763143%7C35.658653,139.723538&travelmode=transit" target="_blank">
+      <p class="map-caption">츠키지 → 갓파바시 → 진보초(Glitch) → 니시아자부</p>
+      <a class="route-btn" href="https://www.google.com/maps/dir/?api=1&origin=35.674802,139.6804373&destination=35.65864,139.72325&waypoints=35.667917,139.77375%7C35.713848,139.788677%7C35.712543,139.788665%7C35.714479,139.789159%7C35.693742,139.761305%7C35.658653,139.723538&travelmode=transit" target="_blank">
         <span>Google 지도로 동선 열기<small>지도 앱에서 길찾기 시작</small></span>
         <span class="arrow">↗</span>
       </a>
@@ -1027,11 +1038,11 @@ footer .mark{
   var DAYS_DATA = {
     '1': [
       HOTEL,
-      {lat: 35.667917, lng: 139.77375,   name: '스시 야마토',         meta: '11:30 · 점심 (츠키지)'},
+      {lat: 35.667917, lng: 139.77375,   name: '스시 야마토',         meta: '11:30 · 점심 (츠키지) ⚠️ 13시 재예약 권장'},
       {lat: 35.713848, lng: 139.788677,  name: 'Kama-Asa',            meta: '13:30 · 칼 (갓파바시)'},
       {lat: 35.712543, lng: 139.788665,  name: 'Majimaya',            meta: '14:30 · 베이킹 도구'},
       {lat: 35.714479, lng: 139.789159,  name: 'Tsubaya',             meta: '15:30 · 칼'},
-      {lat: 35.670432, lng: 139.763143,  name: 'Dover Street Market', meta: '17:00 · 선택 (긴자)'},
+      {lat: 35.693742, lng: 139.761305,  name: 'Glitch Coffee',       meta: '17:00 · 진보초 푸어오버'},
       {lat: 35.658653, lng: 139.723538,  name: '이세 스에요시',        meta: '18:30 · 가이세키'},
       {lat: 35.65864,  lng: 139.72325,   name: 'Bunon',               meta: '21:30 · 와인바'}
     ],
