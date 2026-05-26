@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{
   --bg:#F4EFE3;
@@ -891,6 +891,132 @@ footer .mark{
   </footer>
 
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+  function initMaps() {
+    if (typeof L === 'undefined') {
+      // Leaflet still loading - retry up to 15 times
+      if (!window.__leafRetry) window.__leafRetry = 0;
+      if (window.__leafRetry++ < 15) {
+        setTimeout(initMaps, 250);
+      } else {
+        var maps = document.querySelectorAll('.day-map');
+        for (var i = 0; i < maps.length; i++) {
+          maps[i].innerHTML = '<div style="padding:20px;text-align:center;font-family:serif;color:#7A2030;font-style:italic;">지도 로드 실패 — 아래 버튼으로 구글맵에서 보세요</div>';
+        }
+      }
+      return;
+    }
+
+    var HOTEL = {lat: 35.674802, lng: 139.6804373, name: '숙소', meta: 'Nishihara 1-12-4, Shibuya', isHotel: true};
+
+    var days = [
+      {
+        id: 'map-day1',
+        locations: [
+          HOTEL,
+          {lat: 35.667917, lng: 139.77375,   name: '스시 야마토',         meta: '11:30 · 점심 (츠키지)'},
+          {lat: 35.713848, lng: 139.788677,  name: 'Kama-Asa',            meta: '13:30 · 칼 (갓파바시)'},
+          {lat: 35.712543, lng: 139.788665,  name: 'Majimaya',            meta: '14:30 · 베이킹 도구'},
+          {lat: 35.714479, lng: 139.789159,  name: 'Tsubaya',             meta: '15:30 · 칼'},
+          {lat: 35.670432, lng: 139.763143,  name: 'Dover Street Market', meta: '17:00 · 선택 (긴자)'},
+          {lat: 35.658653, lng: 139.723538,  name: '이세 스에요시',        meta: '18:30 · 가이세키'},
+          {lat: 35.65864,  lng: 139.72325,   name: 'Bunon',               meta: '21:30 · 와인바'}
+        ]
+      },
+      {
+        id: 'map-day2',
+        locations: [
+          HOTEL,
+          {lat: 35.67503,  lng: 139.6787,    name: 'EQUAL',               meta: '10:00 · 파티스리 (도보 3분)'},
+          {lat: 35.669775, lng: 139.689561,  name: '365 Days',            meta: '10:45 · 베이커리'},
+          {lat: 35.66662,  lng: 139.6924,    name: 'Fuglen Tokyo',        meta: '11:20 · 커피'},
+          {lat: 35.6675,   lng: 139.7126,    name: '마이센 아오야마',      meta: '12:30 · 점심'},
+          {lat: 35.665572, lng: 139.704765,  name: '오모테산도 쇼핑',      meta: '14:00 · 쇼핑'},
+          {lat: 35.65724,  lng: 139.72297,   name: 'S TOKYO',             meta: '19:00 · 와인'},
+          {lat: 35.65816,  lng: 139.71872,   name: '토리사와 22',          meta: '20:15 · 저녁 \u2705'},
+          {lat: 35.65821,  lng: 139.72361,   name: 'WALL_alternative',    meta: '22:45 · 와인바'}
+        ]
+      },
+      {
+        id: 'map-day3',
+        locations: [
+          HOTEL,
+          {lat: 35.668513, lng: 139.68991,   name: 'Path',                meta: '08:30 · 브런치 (도보 12분)'},
+          {lat: 35.649059, lng: 139.699622,  name: '다이칸야마 T-Site',    meta: '11:00 · 쇼핑'},
+          {lat: 35.649365, lng: 139.7008998, name: 'Maison Kitsuné',      meta: '12:00 · 쇼핑'},
+          {lat: 35.65556,  lng: 139.69928,   name: '코타로',              meta: '14:00 · 점심 \u2705'}
+        ]
+      }
+    ];
+
+    for (var i = 0; i < days.length; i++) {
+      (function(day){
+        var el = document.getElementById(day.id);
+        if (!el) return;
+
+        var map = L.map(el, {
+          scrollWheelZoom: false,
+          zoomControl: true
+        });
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap · CARTO',
+          subdomains: 'abcd',
+          maxZoom: 19
+        }).addTo(map);
+
+        var points = [];
+        for (var j = 0; j < day.locations.length; j++) {
+          points.push([day.locations[j].lat, day.locations[j].lng]);
+        }
+
+        L.polyline(points, {
+          color: '#7A2030',
+          weight: 2.5,
+          opacity: 0.7,
+          dashArray: '6,8'
+        }).addTo(map);
+
+        var stopNum = 0;
+        for (var k = 0; k < day.locations.length; k++) {
+          var loc = day.locations[k];
+          var markerHtml;
+          if (loc.isHotel) {
+            markerHtml = '<div class="hotel-marker">宿</div>';
+          } else {
+            stopNum++;
+            markerHtml = '<div class="day-marker">' + stopNum + '</div>';
+          }
+          var icon = L.divIcon({
+            className: '',
+            html: markerHtml,
+            iconSize: loc.isHotel ? [32, 32] : [28, 28],
+            iconAnchor: loc.isHotel ? [16, 16] : [14, 14],
+            popupAnchor: [0, -14]
+          });
+          L.marker([loc.lat, loc.lng], {icon: icon})
+            .addTo(map)
+            .bindPopup('<strong>' + loc.name + '</strong><em>' + loc.meta + '</em>');
+        }
+
+        map.fitBounds(L.latLngBounds(points), {padding: [40, 30]});
+
+        el.addEventListener('click', function(){ map.scrollWheelZoom.enable(); });
+        el.addEventListener('mouseleave', function(){ map.scrollWheelZoom.disable(); });
+      })(days[i]);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMaps);
+  } else {
+    initMaps();
+  }
+})();
+</script>
 
 </body>
 </html>
